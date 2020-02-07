@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 
 const App = () => {
   const [timer, setTimer] = useState(0);
   const [timerStatus, setTimerStatus] = useState(0);
+
+  useEffect(() => {
+    console.log("Time is now " + timer)
+    if (timer !== 0 && timerStatus === 1) {
+      setTimeout(() => {
+        let currentTime = timer;
+        currentTime--;
+        setTimer(currentTime)
+      }, 1000)
+    }
+  })
 
   function addMinute() {
     const currentTime = timer;
@@ -23,24 +34,13 @@ const App = () => {
     const currentStatus = timerStatus;
     if (currentStatus === 0) {
       setTimerStatus(1)
-      countDown()
+      setTimer(timer - 1)
     } else if (currentStatus === 1) {
       setTimerStatus(0)
+      setTimer(0)
     } else {
       console.log("timerState error " + currentStatus);
     }
-  }
-
-  function countDown() {
-    let currentTime = timer;
-    setInterval(() => {
-      console.log("tick")
-      currentTime -= 1
-      setTimer(currentTime);
-      // if (currentTime === 0) {
-      //   clearInterval(countdown)
-      // }
-    }, 1000)
   }
 
   return (
