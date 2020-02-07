@@ -1,84 +1,61 @@
-import React from 'react';
-import Timer from './Timer';
-import TimerControls from './TimerControls';
-import TimerStatus from './TimerStatus';
+import React, { useState } from 'react';
 
 
+const App = () => {
+  const [timer, setTimer] = useState(0);
+  const [timerStatus, setTimerStatus] = useState(0);
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      timerStatus: false,
-      time: 22
-    }
-    this.timerStarted = this.timerStarted.bind(this);
-    this.addMinute = this.addMinute.bind(this);
-    this.removeMinute = this.removeMinute.bind(this);
-    this.timerStarted = this.timerStarted.bind(this);
-  }
-
-  addMinute() {
-    console.log(this.state.time)
-    if (this.state.time + 60 <= 1200) {
-      this.setState({
-        time: this.state.time + 60
-      });
-    } else if (this.state.time + 60 > 1200) {
-      this.setState({
-        time: 1200
-      });
+  function addMinute() {
+    const currentTime = timer;
+    if (currentTime + 60 <= 1200) {
+      setTimer(currentTime + 60);
     }
   }
 
-  removeMinute() {
-    console.log(this.state.time)
-    if (this.state.time >= 60) {
-      this.setState({
-        time: this.state.time - 60
-      });
-    } else if (this.state.time < 60) {
-      this.setState({
-        time: this.state.time - this.state.time
-      });
+  function removeMinute() {
+    const currentTime = timer;
+    if (currentTime - 60 >= 0) {
+      setTimer(currentTime - 60);
     }
   }
 
-  timerStarted() {
-    console.log(this.state.timerStatus)
-    this.setState({
-      timerStatus: !this.state.timerStatus
-    });
-    if (!this.state.timerStatus) {
-      this.timer = setInterval(() => {
-        if (this.state.time !== 0) {
-          this.setState({
-            time: this.state.time - 1
-          });
-        } else if (this.state.time === 0) {
-          this.setState({
-            timerStatus: false
-          })
-          clearInterval(this.timer)
-        }
-      }, 1000)
+  function timerState() {
+    const currentStatus = timerStatus;
+    if (currentStatus === 0) {
+      setTimerStatus(1)
+      countDown()
+    } else if (currentStatus === 1) {
+      setTimerStatus(0)
+    } else {
+      console.log("timerState error " + currentStatus);
     }
-
   }
 
-  countdown() {
-
+  function countDown() {
+    let currentTime = timer;
+    setInterval(() => {
+      console.log("tick")
+      currentTime -= 1
+      setTimer(currentTime);
+      // if (currentTime === 0) {
+      //   clearInterval(countdown)
+      // }
+    }, 1000)
   }
 
-  render() {
-    return (
-      <div>
-        <Timer time={this.state.time} />
-        <TimerControls timerStatus={this.state.timerStatus} add={this.addMinute} remove={this.removeMinute} />
-        <TimerStatus timerStarted={this.timerStarted} timerStatus={this.state.timerStatus} />
+  return (
+    <div className="pomodorotimer code">
+      <div className="timer">{timer}</div>
+      <div className="controls">
+        <button disabled={timerStatus} onClick={addMinute}>Add</button>
+        <button disabled={timerStatus} onClick={removeMinute}>Remove</button>
+        <button onClick={timerState}>{(timerStatus) ? "Reset" : "Start"}</button>
       </div>
-    );
-  }
+    </div>
+  );
 }
+
+
+
 
 export default App;
